@@ -7,7 +7,7 @@ This project monitors the price of the Kindle Fire on Amazon and sends an automa
 Here's the workflow:
 
 ### 1. Periodic Price Checks
-The script runs at configurable intervals (default: every 6 hours) using a scheduler. Each cycle:
+The script runs at configurable intervals using a scheduler. Each cycle:
 
 - Fetches product pages using HTTP requests with custom headers to mimic browser behavior
 - Parses HTML content with BeautifulSoup to extract pricing data
