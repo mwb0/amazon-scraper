@@ -1,3 +1,4 @@
+import os
 from bs4 import BeautifulSoup
 import re
 from urllib.parse import urljoin, unquote, urlparse, parse_qs
@@ -65,6 +66,13 @@ def load_previous_price(asin=None):
 
 def write_csv(data):
   try:
+    # Resolve the file path to an absolute path
+    log_file_path = os.path.abspath(LOG_FILE_PATH)
+    
+    # Get the directory from the file path and create the folder if it doesn't exist
+    directory = os.path.dirname(log_file_path)
+    os.makedirs(directory, exist_ok=True)  # Create folder if it doesn't exist
+        
     df_new = pd.DataFrame(data)
     df_new['timestamp'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
@@ -73,8 +81,11 @@ def write_csv(data):
 
     # Load existing data if file exists
     try:
-        df_existing = pd.read_csv(LOG_FILE_PATH, index_col='asin')
-        df = pd.concat([df_existing, df_new], axis=0, ignore_index=False)  # Append new data
+        if os.path.exists(log_file_path):
+            df_existing = pd.read_csv(log_file_path, index_col='asin')
+            df = pd.concat([df_existing, df_new], axis=0, ignore_index=False)  # Append new data
+        else:
+            df = df_new  # If no file, create new one
     except FileNotFoundError:
         df = df_new  # If no file, create new one
     except Exception as e:
